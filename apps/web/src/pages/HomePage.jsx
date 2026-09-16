@@ -26,7 +26,7 @@ function HomePage() {
           Kvalitets hengere bygget for norske veier og nordmenns behov
         </h1>
         <p className="text-base md:text-xl mb-8 text-white/90 max-w-3xl mx-auto leading-relaxed">
-          JJ Trailer Norge leverer premium hengere over hele Norge. Vi tilbyr pålitelige løsninger for dine transportbehov.
+          JJ Trailer Norge er en norsk tilhengerforhandler som selger JJ-Trailer Eagle kvalitetshengere over hele Norge.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button asChild size="lg" variant="secondary" className="text-base">

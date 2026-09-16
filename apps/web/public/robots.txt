@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jjtrailer.no/sitemap.xml
+Host: jjtrailer.no

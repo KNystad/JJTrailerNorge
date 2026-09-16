@@ -1,9 +1,15 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Phone, Mail, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import HomePage from '@/pages/HomePage.jsx';
+
+const SITE_URL = 'https://jjtrailer.no';
+const SITE_NAME = 'JJ Trailer Norge';
+const PAGE_TITLE = 'JJ Trailer Norge | Kvalitetshengere for norske behov';
+const PAGE_DESCRIPTION = 'JJ Trailer Norge er en norsk tilhengerforhandler som selger JJ-Trailer Eagle kvalitetshengere i hele Norge. Se modeller, priser og kontakt salgsteamet i Skibotn.';
+
 function App() {
   const trailers = [{
     type: 'JJ-Trailer Eagle - 4000-15',
@@ -94,18 +100,137 @@ function App() {
   const sellers = [{
     name: 'Thorstein Oppegård',
     phone: '+47 90 06 22 60',
-    email: 'thorstein@jjtrailer.no',
+    email: 'topp01@live.no',
     location: 'Sommersetlia 1, 9143 Skibotn'
   }, {
     name: 'Tor-Vidar Nystad',
     phone: '+47 91 32 61 32',
-    email: 'tor-vidar@jjtrailer.no',
+    email: 'tvnystad@hotmail.com',
     location: 'Sommersetlia 1, 9143 Skibotn'
   }];
+
+  const siteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    url: SITE_URL,
+    inLanguage: 'no'
+  };
+
+  const businessSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': `${SITE_URL}/#organization`,
+    name: SITE_NAME,
+    url: SITE_URL,
+    description: 'Norsk tilhengerforhandler som selger JJ-Trailer Eagle kvalitetshengere til kunder i hele Norge. JJ Trailer Norge driver ikke med salg av personbiler.',
+    knowsAbout: ['tilhengere', 'varehengere', 'JJ-Trailer Eagle'],
+    image: [`${SITE_URL}/logo-main.png`, `${SITE_URL}/TrailerImage.png`],
+    email: sellers.map((seller) => seller.email),
+    telephone: sellers.map((seller) => seller.phone),
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Sommersetlia 1',
+      postalCode: '9143',
+      addressLocality: 'Skibotn',
+      addressCountry: 'NO'
+    },
+    areaServed: {
+      '@type': 'Country',
+      name: 'Norway'
+    },
+    contactPoint: sellers.map((seller) => ({
+      '@type': 'ContactPoint',
+      contactType: 'sales',
+      name: seller.name,
+      telephone: seller.phone,
+      email: seller.email,
+      areaServed: 'NO',
+      availableLanguage: ['no', 'en']
+    }))
+  };
+
+  const productsSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'JJ Trailer modeller og priser',
+    itemListElement: trailers.map((trailer, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Product',
+        name: trailer.type,
+        description: `${trailer.type} med dimensjoner ${trailer.dimensions} og totalvekt ${trailer.weight}.`,
+        image: `${SITE_URL}/TrailerImage.png`,
+        offers: {
+          '@type': 'Offer',
+          priceCurrency: 'NOK',
+          price: trailer.price.replace(/[^\d]/g, ''),
+          availability: 'https://schema.org/InStock',
+          seller: {
+            '@type': 'Organization',
+            name: SITE_NAME
+          },
+          url: `${SITE_URL}/#pricing`
+        }
+      }
+    }))
+  };
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [{
+      '@type': 'Question',
+      name: 'Hvor leverer JJ Trailer Norge hengere?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Vi leverer hengere over hele Norge og hjelper deg med riktig modell basert på behov og bruksområde.'
+      }
+    }, {
+      '@type': 'Question',
+      name: 'Er prisene oppgitt med merverdiavgift?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Prisene er oppgitt som forhåndspris inkludert merverdiavgift. Frakt kommer i tillegg.'
+      }
+    }, {
+      '@type': 'Question',
+      name: 'Hvordan kontakter jeg salgsteamet?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Du kan ringe eller sende e-post direkte til Thorstein Oppegård eller Tor-Vidar Nystad via kontaktinformasjonen på nettsiden.'
+      }
+    }]
+  };
+
   return <>
       <Helmet>
-        <title>JJ Trailer Norge - Professional trailer sales in Norway</title>
-        <meta name="description" content="Quality trailers for sale in Norway. Standard trailers available. Contact our sales team in Troms." />
+        <html lang="no" />
+        <title>{PAGE_TITLE}</title>
+        <meta name="description" content={PAGE_DESCRIPTION} />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta name="author" content={SITE_NAME} />
+        <meta name="keywords" content="tilhengerforhandler, tilhenger, varehenger, trailer, JJ Trailer Norge, henger pris, tilhenger Norge, Skibotn" />
+        <link rel="canonical" href={SITE_URL} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="nb_NO" />
+        <meta property="og:site_name" content={SITE_NAME} />
+        <meta property="og:title" content={PAGE_TITLE} />
+        <meta property="og:description" content={PAGE_DESCRIPTION} />
+        <meta property="og:url" content={SITE_URL} />
+        <meta property="og:image" content={`${SITE_URL}/TrailerImage.png`} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={PAGE_TITLE} />
+        <meta name="twitter:description" content={PAGE_DESCRIPTION} />
+        <meta name="twitter:image" content={`${SITE_URL}/TrailerImage.png`} />
+
+        <script type="application/ld+json">{JSON.stringify(siteSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(businessSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(productsSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
 
       {/* Header */}
@@ -139,7 +264,7 @@ function App() {
           <div className="text-center mb-16">
             <h2 className="mb-4">Våre henger modeller</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Velg fra vårt utvalg av profesjonelle hengere, hver bygget etter norske standarder med kvalitetsmaterialer og pålitelig konstruksjon. <br />Forh.pris + mva. Frakt medkommer. <br />Kontakt oss for mer informasjon.
+              Velg fra vårt utvalg av profesjonelle hengere, hver bygget etter norske standarder med kvalitetsmaterialer og pålitelig konstruksjon. <br />Forh.pris  inkl.mva. Frakt medkommer. <br />Kontakt oss for mer informasjon.
             </p>
             <div className="max-w-4xl mx-auto mt-8 rounded-2xl border border-border/70 bg-muted/40 p-4 sm:p-6 shadow-sm">
               <img
@@ -173,6 +298,53 @@ function App() {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section id="faq" className="py-24 bg-background">
+        <div className="container">
+          <div className="text-center mb-12">
+            <h2 className="mb-4">Vanlige spørsmål</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Rask informasjon om levering, priser og kontakt.
+            </p>
+          </div>
+
+          <div className="max-w-4xl mx-auto grid gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">Hvor leverer JJ Trailer Norge hengere?</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Vi leverer hengere over hele Norge og hjelper deg med å velge modell basert på behov, last og kjøreforhold.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">Er prisene oppgitt med merverdiavgift?</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Ja, prisene er oppgitt som forhåndspris inkludert mva. Frakt tilkommer.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">Hvordan kontakter jeg salgsteamet?</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Ring til salgsrepresentantene våre i Skibotn for rask oppfølging.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Contact Section */}
       <section id="contact" className="py-24">
         <div className="container">
@@ -196,12 +368,12 @@ function App() {
                     </div>
                     <span className="font-medium">{seller.phone}</span>
                   </a>
-                  
+
                   <a href={`mailto:${seller.email}`} className="flex items-center gap-3 text-foreground hover:text-primary transition-colors duration-200 group">
                     <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center group-hover:bg-primary/10 transition-colors duration-200">
                       <Mail className="w-5 h-5" />
                     </div>
-                    <span className="font-medium">{seller.email}</span>
+                    <span className="font-medium break-all">{seller.email}</span>
                   </a>
                   
                   <div className="flex items-center gap-3 text-muted-foreground">
@@ -240,7 +412,7 @@ function App() {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      Apne i Google Maps
+                      Åpne i Google Maps
                     </a>
                   </Button>
                 </div>
